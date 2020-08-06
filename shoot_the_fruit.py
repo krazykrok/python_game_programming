@@ -24,7 +24,7 @@ def on_mouse_down(pos):
         score = score + 1
         display_score()
     else:
-        print("You Missed!")
+        print("You Missed! F")
         quit()        
         
 def display_score():
