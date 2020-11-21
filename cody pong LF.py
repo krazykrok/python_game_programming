@@ -23,13 +23,34 @@ class Paddle(pygame.Rect):
     def move_paddle(self, board_height):
         keys_pressed = pygame.key.get_pressed()
 
-        if keys_pressed[self.up_key]:
-            if self.y - self.velocity > 0:
-                self.y -= self.velocity
+        if keys_pressed[self.up_key]: #if you press up
+            if self.velocity>-5:
+                self.velocity = self.velocity -0.2 
 
         if keys_pressed[self.down_key]:
-            if self.y + self.velocity < board_height - self.height:
-                self.y += self.velocity
+            if self.velocity<5:
+                self.velocity = self.velocity +0.2
+
+        if (keys_pressed[self.up_key]==False) and (keys_pressed[self.down_key]==False):
+            self.velocity = 0.97*self.velocity
+
+
+         
+
+        #if paddle hits top
+        if self.top<1:
+            self.velocity=0
+            self.top = 2
+
+        #if paddle hits top
+        if self.bottom>pong.HEIGHT-1:
+            self.velocity=0
+            self.bottom = pong.HEIGHT-2
+
+
+        #move paddle
+        self.y = self.y+ self.velocity 
+
 
     def reset(self):
         self.velocity=0
@@ -48,8 +69,8 @@ class Ball(pygame.Rect):
         
     def reset(self):
         #change the x coordinate of the ball to half of the game width.
-        pass
-        
+        self.centerx=pong.WIDTH/2
+        self.centery=pong.HEIGHT/2
 
 
 class Pong:
@@ -108,10 +129,11 @@ class Pong:
 
     def check_ball_hits_wall(self):
         for ball in self.balls:
-            #horizontal walls
-            if ball.x > self.WIDTH or ball.x < 0:
+            
+            #vertical walls
+            if ball.x > self.WIDTH or ball.x<1:
                 ball.reset()
-
+            #horizontal walls
             if ball.y > self.HEIGHT - self.BALL_WIDTH or ball.y < 0:
                 ball.angle = -ball.angle
                 
@@ -133,10 +155,10 @@ class Pong:
                     return
 
             self.check_ball_hits_paddle()
-            self.check_ball_hits_wall()
+            self.checNk_ball_hits_wall()
 
             # Redraw the screen. --------------------------Disabled for debug-----------------------------
-            #self.screen.fill((0, 0, 0))
+            self.screen.fill((0, 0, 0))
             pygame.draw.rect(self.screen, (0,0,0), pygame.Rect(0, 0, 10, 400))
             pygame.draw.rect(self.screen, (0,0,0), pygame.Rect(790, 0, 10, 400))
 
